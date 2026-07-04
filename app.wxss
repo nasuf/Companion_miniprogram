@@ -1,0 +1,22 @@
+/* Global styles — Flutter-aligned light theme. */
+page {
+  background-color: #eef1f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  color: #1c1c1e;
+  --primary: #2f6bff;
+  --primary-deep: #1f6fff;
+  --accent-cyan: #18c6c0;
+  --bubble-user: #2f6bff;
+  --bubble-ai: #ffffff;
+  --page-bg: #eef1f5;
+  --text: #1c1c1e;
+  --muted: #8e8e93;
+  --hairline: #e5e5ea;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

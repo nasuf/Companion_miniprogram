@@ -1,0 +1,87 @@
+<view class="login">
+  <view class="orb orb-a"></view>
+  <view class="orb orb-b"></view>
+
+  <view class="content">
+    <view class="brand">
+      <view class="brand-logo">伴</view>
+      <view class="brand-texts">
+        <view class="brand-name">「伴生」</view>
+        <view class="brand-sub">Ban Sheng</view>
+      </view>
+    </view>
+
+    <view class="hero">
+      <view class="hero-title">从一句话开始</view>
+      <view class="hero-sub">在没有终点的路上，</view>
+      <view class="hero-sub">我们慢慢走，慢慢说。</view>
+    </view>
+
+    <view class="card">
+      <view class="seg">
+        <view
+          class="seg-item {{mode === 'login' ? 'on' : ''}}"
+          data-mode="login"
+          bindtap="onSetMode"
+        >登录</view>
+        <view
+          class="seg-item {{mode === 'register' ? 'on' : ''}}"
+          data-mode="register"
+          bindtap="onSetMode"
+        >注册</view>
+      </view>
+
+      <view class="field">
+        <input
+          class="field-input"
+          placeholder="账号"
+          value="{{username}}"
+          bindinput="onUsername"
+          confirm-type="next"
+        />
+      </view>
+      <view class="field">
+        <input
+          class="field-input"
+          placeholder="密码"
+          password="{{true}}"
+          value="{{password}}"
+          bindinput="onPassword"
+          confirm-type="done"
+          bindconfirm="onSubmit"
+        />
+      </view>
+
+      <view
+        class="submit {{loading ? 'busy' : ''}}"
+        bindtap="onSubmit"
+      >{{loading ? '请稍候…' : (mode === 'login' ? '登录' : '注册并继续')}}</view>
+    </view>
+
+    <view class="divider">
+      <view class="line"></view>
+      <text class="or">or</text>
+      <view class="line"></view>
+    </view>
+
+    <view class="social" bindtap="onWechatLogin">
+      <view class="wechat-orb">
+        <text wx:if="{{wechatLoading}}" class="wechat-loading">…</text>
+        <!-- WeChat double-bubble logo drawn in CSS (white bubbles, green eyes) -->
+        <view wx:else class="wx-logo">
+          <view class="wx-bubble-big">
+            <view class="wx-eye"></view>
+            <view class="wx-eye"></view>
+          </view>
+          <view class="wx-bubble-small">
+            <view class="wx-eye wx-eye-sm"></view>
+            <view class="wx-eye wx-eye-sm"></view>
+          </view>
+        </view>
+      </view>
+      <text class="social-label">微信一键登录</text>
+    </view>
+
+    <view class="privacy">登录即表示同意 隐私协议 · 数据可删除</view>
+  </view>
+</view>

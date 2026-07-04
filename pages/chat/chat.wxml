@@ -1,0 +1,158 @@
+<view class="chat">
+  <!-- Custom header (Flutter-style): avatar + name + status pill + interaction badge -->
+  <view class="chat-header" style="padding-top: {{statusBarHeight}}px;">
+    <view class="header-main" style="min-height: {{navBarHeight}}px;">
+      <view class="header-avatar-wrap">
+        <image
+          wx:if="{{aiAvatarUrl}}"
+          class="header-avatar"
+          src="{{aiAvatarUrl}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="header-avatar header-avatar-fallback">{{aiInitial}}</view>
+      </view>
+      <view class="header-texts">
+        <view class="header-name-row">
+          <text class="header-name">{{agentName}}</text>
+        </view>
+        <view wx:if="{{interactionDays}}" class="badge-row">
+          <view class="days-badge">🔥 互动第{{interactionDays}}天</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Empty state when the account has no agent yet -->
+  <view wx:if="{{noAgent}}" class="empty">
+    <view class="empty-title">还没有你的 AI 伙伴</view>
+    <view class="empty-tip">请先在「伴生」App 中创建一个 AI 伙伴，再回到这里聊天。</view>
+    <view class="empty-btn" bindtap="onLogout">退出登录</view>
+  </view>
+
+  <!-- Message list -->
+  <scroll-view
+    wx:else
+    class="messages"
+    scroll-y="{{true}}"
+    scroll-into-view="{{scrollInto}}"
+    scroll-with-animation="{{true}}"
+    bindtap="onListTap"
+  >
+    <view class="messages-inner">
+      <block wx:for="{{messages}}" wx:key="key">
+        <view class="row {{item.role === 'user' ? 'row-user' : 'row-ai'}}" id="msg-{{index}}">
+          <view class="side-avatar" wx:if="{{item.role !== 'user'}}">
+            <image
+              wx:if="{{aiAvatarUrl}}"
+              class="avatar avatar-img"
+              src="{{aiAvatarUrl}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="avatar avatar-ai">{{aiInitial}}</view>
+          </view>
+
+          <view class="bubble-wrap">
+            <view class="bubble {{item.role === 'user' ? 'bubble-user' : 'bubble-ai'}}">
+              <image
+                wx:if="{{item.image}}"
+                class="bubble-image"
+                src="{{item.image}}"
+                mode="widthFix"
+                bindtap="onPreviewImage"
+                data-src="{{item.image}}"
+              />
+              <text wx:if="{{item.text}}" class="bubble-text" user-select="{{true}}">{{item.text}}</text>
+            </view>
+            <view class="meta-row {{item.role === 'user' ? 'meta-user' : ''}}">
+              <text wx:if="{{item.status === 'sending'}}" class="meta-status">发送中…</text>
+              <text wx:elif="{{item.clock}}" class="meta-clock">{{item.clock}}</text>
+            </view>
+          </view>
+
+          <view class="side-avatar" wx:if="{{item.role === 'user'}}" catchtap="goMenu">
+            <view class="avatar avatar-user">我</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- AI typing indicator -->
+      <view wx:if="{{aiTyping}}" class="row row-ai">
+        <view class="side-avatar">
+          <image
+            wx:if="{{aiAvatarUrl}}"
+            class="avatar avatar-img"
+            src="{{aiAvatarUrl}}"
+            mode="aspectFill"
+          />
+          <view wx:else class="avatar avatar-ai">{{aiInitial}}</view>
+        </view>
+        <view class="bubble-wrap">
+          <view class="bubble bubble-ai typing">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+          </view>
+        </view>
+      </view>
+
+      <view id="anchor-bottom" class="anchor"></view>
+    </view>
+  </scroll-view>
+
+  <!-- Composer: keyboard height handled manually (adjust-position=false) so the
+       page layout stays intact and the custom header remains visible. -->
+  <view wx:if="{{!noAgent}}" class="composer" style="padding-bottom: {{composerBottom}};">
+    <view class="composer-bar">
+      <textarea
+        class="composer-input"
+        value="{{inputValue}}"
+        placeholder="发消息…"
+        placeholder-class="composer-placeholder"
+        auto-height="{{true}}"
+        maxlength="2000"
+        show-confirm-bar="{{false}}"
+        adjust-position="{{false}}"
+        disable-default-padding="{{true}}"
+        bindkeyboardheightchange="onKeyboardHeight"
+        bindinput="onInput"
+        bindfocus="onInputFocus"
+        bindblur="onInputBlur"
+      ></textarea>
+
+      <view class="icon-btn" bindtap="toggleEmoji">
+        <text class="icon-emoji">{{showEmoji ? '⌨' : '☺'}}</text>
+      </view>
+      <view class="icon-btn" bindtap="togglePlus">
+        <text class="icon-plus {{showPlus ? 'rot' : ''}}">＋</text>
+      </view>
+
+      <view wx:if="{{inputValue}}" class="send-btn" bindtap="onSendText">发送</view>
+    </view>
+
+    <!-- Emoji panel -->
+    <view wx:if="{{showEmoji}}" class="panel emoji-panel">
+      <view class="emoji-title">常用表情</view>
+      <view class="emoji-grid">
+        <view
+          wx:for="{{emojis}}"
+          wx:key="*this"
+          class="emoji-item"
+          bindtap="onPickEmoji"
+          data-emoji="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <!-- Plus panel -->
+    <view wx:if="{{showPlus}}" class="panel plus-panel">
+      <view class="plus-item" bindtap="onPickAlbum">
+        <view class="plus-icon">🖼</view>
+        <text class="plus-label">图片</text>
+      </view>
+      <view class="plus-item" bindtap="onTakePhoto">
+        <view class="plus-icon">📷</view>
+        <text class="plus-label">拍摄</text>
+      </view>
+    </view>
+  </view>
+</view>

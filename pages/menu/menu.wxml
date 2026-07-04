@@ -1,0 +1,19 @@
+<view class="menu">
+  <view class="profile-card">
+    <image
+      wx:if="{{avatarUrl}}"
+      class="menu-avatar"
+      src="{{avatarUrl}}"
+      mode="aspectFill"
+    />
+    <view wx:else class="menu-avatar menu-avatar-fallback">我</view>
+    <view class="profile-texts">
+      <view class="profile-name">{{displayName}}</view>
+      <view wx:if="{{username && username !== displayName}}" class="profile-sub">{{username}}</view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <view class="action-btn danger" bindtap="onLogout">退出登录</view>
+  </view>
+</view>

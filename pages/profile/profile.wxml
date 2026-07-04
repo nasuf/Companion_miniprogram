@@ -1,0 +1,60 @@
+<view class="profile">
+  <view class="orb orb-a"></view>
+  <view class="orb orb-b"></view>
+
+  <view class="content">
+    <view class="hero">
+      <view class="hero-title">完善你的资料</view>
+      <view class="hero-sub">设置头像和昵称，让聊天更有温度</view>
+    </view>
+
+    <view class="card">
+      <!-- Avatar picker: styled circle + invisible open-type button overlay
+           (native button default styles can't distort the circle this way) -->
+      <view class="avatar-wrap">
+        <view class="avatar-circle">
+          <image
+            wx:if="{{avatarPath}}"
+            class="avatar-img"
+            src="{{avatarPath}}"
+            mode="aspectFill"
+          />
+          <view wx:else class="avatar-empty">
+            <text class="avatar-plus">＋</text>
+            <text class="avatar-hint">选择头像</text>
+          </view>
+        </view>
+        <view class="avatar-badge">
+          <view class="badge-cam"></view>
+        </view>
+        <button
+          class="avatar-tap"
+          open-type="chooseAvatar"
+          bind:chooseavatar="onChooseAvatar"
+        ></button>
+      </view>
+
+      <!-- WeChat nickname-fill capability: type="nickname" -->
+      <view class="field">
+        <input
+          class="field-input"
+          type="nickname"
+          placeholder="点击填写昵称"
+          placeholder-class="field-placeholder"
+          value="{{nickname}}"
+          maxlength="24"
+          bindinput="onNickname"
+          bindblur="onNickname"
+        />
+      </view>
+
+      <view
+        class="save-btn {{saving ? 'busy' : ''}}"
+        bindtap="onSave"
+      >{{saving ? '保存中…' : '保存并开始聊天'}}</view>
+    </view>
+
+    <!-- Exit hatch: logs out and returns to login (completion stays mandatory) -->
+    <view class="back-login" bindtap="onBackToLogin">返回登录</view>
+  </view>
+</view>

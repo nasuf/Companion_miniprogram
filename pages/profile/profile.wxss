@@ -1,0 +1,210 @@
+.profile {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f2f5f9 0%, #e7edf5 55%, #e6effb 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft aura blobs, same language as the login page */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60rpx);
+  opacity: 0.5;
+}
+.orb-a {
+  width: 480rpx;
+  height: 540rpx;
+  right: -160rpx;
+  top: 20rpx;
+  background: radial-gradient(circle at 40% 40%, rgba(88, 168, 255, 0.45), transparent 70%);
+}
+.orb-b {
+  width: 540rpx;
+  height: 480rpx;
+  left: -200rpx;
+  bottom: 60rpx;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 214, 184, 0.4), transparent 70%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding: 80rpx 48rpx 60rpx;
+  box-sizing: border-box;
+}
+
+.hero {
+  text-align: center;
+}
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #181f26;
+}
+.hero-sub {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: rgba(24, 31, 38, 0.5);
+}
+
+.card {
+  margin-top: 56rpx;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 32rpx;
+  border: 1rpx solid rgba(20, 40, 80, 0.05);
+  box-shadow: 0 20rpx 60rpx rgba(49, 91, 136, 0.12);
+  padding: 56rpx 40rpx 44rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Avatar picker ── */
+.avatar-wrap {
+  position: relative;
+  width: 184rpx;
+  height: 184rpx;
+}
+.avatar-circle {
+  width: 184rpx;
+  height: 184rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(160deg, #eef3fa, #e3ebf6);
+  border: 3rpx solid #ffffff;
+  box-shadow: 0 10rpx 30rpx rgba(31, 60, 120, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+}
+.avatar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  color: #9aa6b5;
+}
+.avatar-plus {
+  font-size: 52rpx;
+  line-height: 1;
+  font-weight: 300;
+}
+.avatar-hint {
+  font-size: 22rpx;
+}
+/* Camera badge (CSS-drawn) at bottom-right */
+.avatar-badge {
+  position: absolute;
+  right: 2rpx;
+  bottom: 2rpx;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2f6bff, #1f6fff);
+  border: 4rpx solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(47, 107, 255, 0.35);
+  z-index: 1;
+}
+.badge-cam {
+  width: 22rpx;
+  height: 16rpx;
+  border: 3rpx solid #ffffff;
+  border-radius: 4rpx;
+  position: relative;
+}
+.badge-cam::before {
+  content: "";
+  position: absolute;
+  top: -7rpx;
+  left: 4rpx;
+  width: 8rpx;
+  height: 5rpx;
+  border: 3rpx solid #ffffff;
+  border-bottom: none;
+  border-radius: 3rpx 3rpx 0 0;
+}
+.badge-cam::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #ffffff;
+}
+/* Invisible native button overlay: receives the tap for open-type=chooseAvatar */
+.avatar-tap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 184rpx;
+  height: 184rpx;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  border-radius: 50%;
+  z-index: 2;
+}
+.avatar-tap::after {
+  border: none;
+}
+
+/* ── Nickname field ── */
+.field {
+  width: 100%;
+  margin-top: 48rpx;
+  background: #f5f6f8;
+  border-radius: 18rpx;
+  padding: 0 28rpx;
+  box-sizing: border-box;
+}
+.field-input {
+  height: 96rpx;
+  font-size: 30rpx;
+  text-align: center;
+}
+.field-placeholder {
+  color: #a8adb5;
+}
+
+/* ── Save button ── */
+.save-btn {
+  width: 100%;
+  margin-top: 40rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ffffff;
+  border-radius: 20rpx;
+  background: linear-gradient(90deg, #1f6fff, #2f8bff);
+  box-shadow: 0 14rpx 34rpx rgba(31, 111, 255, 0.28);
+}
+.save-btn.busy {
+  opacity: 0.7;
+}
+.save-btn:active {
+  opacity: 0.85;
+}
+
+.back-login {
+  margin-top: 36rpx;
+  text-align: center;
+  font-size: 27rpx;
+  color: rgba(24, 31, 38, 0.45);
+}
+.back-login:active {
+  opacity: 0.6;
+}
