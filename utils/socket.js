@@ -17,6 +17,11 @@
 //       pong     -> {}
 const { WS_BASE_URL, PING_INTERVAL_MS } = require('../config.js');
 
+// Close codes that reconnecting cannot fix — stop the backoff loop instead of
+// showing "重连中" forever. Mirrors Companion_server/app/api/realtime/ws.py:
+//   4401 auth_required · 4403 forbidden · 4004 conversation not found
+const AUTH_FATAL_CLOSE_CODES = [4401, 4403, 4004];
+
 function createChatSocket(conversationId, handlers, token) {
   const cb = handlers || {};
   let task = null;
@@ -95,10 +100,16 @@ function createChatSocket(conversationId, handlers, token) {
       handleEnvelope(res.data);
     });
 
-    task.onClose(() => {
+    task.onClose((res) => {
       opened = false;
       stopKeepalive();
       emitState('closed');
+      // Auth-fatal close (missing/invalid token, not owner) — reconnecting
+      // can't fix it, so stop looping and let the page prompt a re-login.
+      if (res && AUTH_FATAL_CLOSE_CODES.indexOf(res.code) !== -1) {
+        disposed = true;
+        return;
+      }
       if (!disposed) scheduleReconnect();
     });
 
