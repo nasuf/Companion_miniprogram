@@ -202,23 +202,27 @@ Page({
   connectSocket() {
     const self = this;
     let everConnected = false;
-    this.socket = createChatSocket(this.conversationId, {
-      onEvent(type, data) {
-        self.handleEvent(type, data);
-      },
-      onState(state) {
-        // Replies persisted while we were offline (e.g. server redeploy killed
-        // the socket mid-reply) would otherwise never show and the typing
-        // indicator would spin forever — reconcile by reloading history.
-        if (state === 'open') {
-          if (everConnected) {
-            self.setData({ aiTyping: false });
-            self.loadHistory().catch(() => {});
+    this.socket = createChatSocket(
+      this.conversationId,
+      {
+        onEvent(type, data) {
+          self.handleEvent(type, data);
+        },
+        onState(state) {
+          // Replies persisted while we were offline (e.g. server redeploy killed
+          // the socket mid-reply) would otherwise never show and the typing
+          // indicator would spin forever — reconcile by reloading history.
+          if (state === 'open') {
+            if (everConnected) {
+              self.setData({ aiTyping: false });
+              self.loadHistory().catch(() => {});
+            }
+            everConnected = true;
           }
-          everConnected = true;
-        }
+        },
       },
-    });
+      this.session && this.session.token,
+    );
     this.socket.connect();
   },
 

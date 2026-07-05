@@ -1,8 +1,10 @@
 // WebSocket wrapper around wx.connectSocket / SocketTask.
 //
 // Protocol (see Companion_server/app/api/realtime/ws.py):
-//   - URL: wss://host/ws/{conversationId}  (no auth token; conversationId acts
-//     as the capability token, matching the Flutter client).
+//   - URL: wss://host/ws/{conversationId}?token={jwt}
+//     conversation_id is NOT a capability token; the backend requires a valid
+//     JWT owner. The token rides as a query param (WS handshakes can't carry
+//     custom headers uniformly across clients).
 //   - Send:   { type: 'ping' }
 //             { type: 'message', data: { message, client_id, attachments } }
 //   - Receive envelopes { type, data }:
@@ -15,7 +17,7 @@
 //       pong     -> {}
 const { WS_BASE_URL, PING_INTERVAL_MS } = require('../config.js');
 
-function createChatSocket(conversationId, handlers) {
+function createChatSocket(conversationId, handlers, token) {
   const cb = handlers || {};
   let task = null;
   let pingTimer = null;
@@ -66,8 +68,12 @@ function createChatSocket(conversationId, handlers) {
     if (disposed) return;
     if (opened) return;
     emitState('connecting');
+    let url = WS_BASE_URL + '/ws/' + conversationId;
+    if (token) {
+      url += '?token=' + encodeURIComponent(token);
+    }
     task = wx.connectSocket({
-      url: WS_BASE_URL + '/ws/' + conversationId,
+      url,
       fail() {
         emitState('error');
         scheduleReconnect();

@@ -97,7 +97,7 @@ Companion_miniprogram/
 - 只做聊天：不含建 agent、记忆管理、音乐、送礼等页面。
 - 历史图片：`/chat/media` 需鉴权，`<image>` 无法带 token，历史里的图片可能不显示；
   新发出的图片用本地临时路径预览正常。
-- WebSocket 未做 token 鉴权（与 Flutter 端一致，靠 `conversationId` 保密）。
+- WebSocket 通过 `?token={jwt}` 查询参数鉴权（后端校验 JWT 属主，与 Flutter/Web 一致）。
 
 ## 上架前合规提醒
 
