@@ -107,8 +107,48 @@ function uploadChatImage(token, payload) {
   return request('POST', '/chat/media', { token, data: payload });
 }
 
+// Resolve a user avatar into something <image> can display.
+// - External absolute URLs (e.g. WeChat CDN qlogo.cn) are used as-is.
+// - Our own /chat/media URLs require Authorization, which <image> cannot send,
+//   so download once with the token and serve from a local temp file.
+function resolveUserAvatar(token, rawUrl) {
+  const trimmed = (rawUrl || '').trim();
+  if (!trimmed) return Promise.resolve('');
+  const absolute = /^https?:\/\//.test(trimmed)
+    ? trimmed
+    : trimmed.startsWith('/')
+      ? BASE_URL + trimmed
+      : trimmed;
+  if (absolute.indexOf(BASE_URL) !== 0) {
+    return Promise.resolve(absolute);
+  }
+  return new Promise((resolve) => {
+    wx.request({
+      url: absolute,
+      header: { Authorization: 'Bearer ' + token },
+      responseType: 'arraybuffer',
+      success(res) {
+        if (res.statusCode < 200 || res.statusCode >= 300 || !res.data) {
+          resolve('');
+          return;
+        }
+        const path = wx.env.USER_DATA_PATH + '/user_avatar.jpg';
+        wx.getFileSystemManager().writeFile({
+          filePath: path,
+          data: res.data,
+          encoding: 'binary',
+          success: () => resolve(path),
+          fail: () => resolve(''),
+        });
+      },
+      fail: () => resolve(''),
+    });
+  });
+}
+
 module.exports = {
   request,
+  resolveUserAvatar,
   login,
   register,
   getMe,

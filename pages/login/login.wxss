@@ -42,18 +42,13 @@
   align-items: center;
   gap: 24rpx;
 }
+/* Flutter 端同款 logo 图 (assets/prototype/logo.png)，圆角+柔影与 App 一致 */
 .brand-logo {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 26rpx;
-  background: linear-gradient(135deg, #18d3c2, #1f6fff);
-  color: #ffffff;
-  font-size: 52rpx;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 18rpx 48rpx rgba(31, 111, 255, 0.22);
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 30rpx;
+  background: #ffffff;
+  box-shadow: 0 18rpx 48rpx rgba(31, 111, 255, 0.2), 0 1rpx 0 #ffffff;
 }
 .brand-name {
   font-size: 34rpx;

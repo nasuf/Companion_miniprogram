@@ -1,14 +1,6 @@
-const { BASE_URL } = require('../../config.js');
+const api = require('../../utils/api.js');
 
 const app = getApp();
-
-function absoluteUrl(url) {
-  const trimmed = (url || '').trim();
-  if (!trimmed) return '';
-  if (/^https?:\/\//.test(trimmed)) return trimmed;
-  if (trimmed.startsWith('/')) return BASE_URL + trimmed;
-  return trimmed;
-}
 
 Page({
   data: {
@@ -27,8 +19,13 @@ Page({
     this.setData({
       displayName: session.user_display_name || username || '我',
       username,
-      avatarUrl: absoluteUrl(session.user_avatar_url || ''),
     });
+    api
+      .resolveUserAvatar(session.token, session.user_avatar_url || '')
+      .then((path) => {
+        if (path) this.setData({ avatarUrl: path });
+      })
+      .catch(() => {});
   },
 
   onLogout() {

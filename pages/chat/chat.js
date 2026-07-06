@@ -66,6 +66,7 @@ Page({
     agentName: '伴生',
     aiInitial: '伴',
     aiAvatarUrl: '',
+    userAvatarUrl: '',
     interactionDays: 0,
     scrollInto: '',
     noAgent: false,
@@ -94,6 +95,14 @@ Page({
       aiInitial: agentName.slice(0, 1),
       aiAvatarUrl: absoluteUrl(session.agent_avatar_url || session.agentAvatarUrl || ''),
     });
+
+    // WeChat users get their real avatar in the message list (async, decorative).
+    api
+      .resolveUserAvatar(session.token, session.user_avatar_url || '')
+      .then((path) => {
+        if (path) this.setData({ userAvatarUrl: path });
+      })
+      .catch(() => {});
 
     this.bootstrap();
   },
@@ -460,6 +469,11 @@ Page({
   // Tap own avatar -> personal menu page (logout lives there).
   goMenu() {
     wx.navigateTo({ url: '/pages/menu/menu' });
+  },
+
+  onUserAvatarError() {
+    // Broken avatar (expired CDN url etc.) -> fall back to the "我" placeholder.
+    this.setData({ userAvatarUrl: '' });
   },
 
   // --- Misc -------------------------------------------------------------

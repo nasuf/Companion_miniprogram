@@ -4,7 +4,7 @@
 
   <view class="content">
     <view class="brand">
-      <view class="brand-logo">伴</view>
+      <image class="brand-logo" src="/assets/logo.png" mode="aspectFill" />
       <view class="brand-texts">
         <view class="brand-name">「伴生」</view>
         <view class="brand-sub">Ban Sheng</view>

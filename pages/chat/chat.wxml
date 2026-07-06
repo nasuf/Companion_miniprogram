@@ -70,7 +70,14 @@
           </view>
 
           <view class="side-avatar" wx:if="{{item.role === 'user'}}" catchtap="goMenu">
-            <view class="avatar avatar-user">我</view>
+            <image
+              wx:if="{{userAvatarUrl}}"
+              class="avatar avatar-img"
+              src="{{userAvatarUrl}}"
+              mode="aspectFill"
+              binderror="onUserAvatarError"
+            />
+            <view wx:else class="avatar avatar-user">我</view>
           </view>
         </view>
       </block>
