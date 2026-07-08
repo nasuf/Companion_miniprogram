@@ -35,12 +35,46 @@ function request(method, path, options) {
 
 // --- Auth ---------------------------------------------------------------
 
+// Best-effort device metadata for signup-source analytics. The backend stores
+// it on the user row only at account creation; failures degrade to nulls and
+// must never block login.
+function collectClientInfo() {
+  const info = { platform: null, os_version: null, app_version: null };
+  try {
+    const device = wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync();
+    // platform: ios / android / windows / mac / devtools; system: "iOS 16.6"
+    info.platform = device.platform || null;
+    info.os_version = device.system || null;
+  } catch (e) {
+    /* keep nulls */
+  }
+  try {
+    // Release version of the Mini Program itself (empty in devtools/trial).
+    const account = wx.getAccountInfoSync();
+    const version = account && account.miniProgram && account.miniProgram.version;
+    info.app_version = version || null;
+  } catch (e) {
+    /* keep nulls */
+  }
+  return info;
+}
+
 function login(username, password) {
   return request('POST', '/auth/login', { data: { username, password } });
 }
 
 function register(username, password) {
-  return request('POST', '/auth/register', { data: { username, password } });
+  const client = collectClientInfo();
+  return request('POST', '/auth/register', {
+    data: {
+      username,
+      password,
+      channel: 'miniprogram',
+      platform: client.platform,
+      os_version: client.os_version,
+      app_version: client.app_version,
+    },
+  });
 }
 
 function getMe(token) {
@@ -50,8 +84,17 @@ function getMe(token) {
 // WeChat Mini Program login: exchange the wx.login() code for a session.
 // Backend calls jscode2session and upserts the same users/auth_identities rows
 // as the mobile app (keyed on unionid when bound to the same Open Platform).
+// Device metadata rides along so first-time logins record the signup source.
 function wechatMiniLogin(code) {
-  return request('POST', '/auth/wechat/miniprogram', { data: { code } });
+  const client = collectClientInfo();
+  return request('POST', '/auth/wechat/miniprogram', {
+    data: {
+      code,
+      platform: client.platform,
+      os_version: client.os_version,
+      app_version: client.app_version,
+    },
+  });
 }
 
 // Persist the 头像昵称填写能力 result. avatarBase64/avatarMime optional.
