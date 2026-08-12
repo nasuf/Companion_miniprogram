@@ -17,7 +17,10 @@ Page({
     }
     const username = session.username || '';
     this.setData({
-      displayName: session.user_display_name || username || '我',
+      // 不回落到 username：那对真实用户是 wx_89b939bc004 这类内部 hash。展示名的
+      // 优先级链（自设 → 微信昵称 → 用户+手机尾号）整条都在服务端
+      // (services/user_profile.resolve_display_identity)，客户端只挑兜底词。
+      displayName: session.user_display_name || '我',
       username,
     });
     api
